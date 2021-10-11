@@ -1,6 +1,18 @@
 from rest_framework import serializers
+from qstart.serializers import User
 
 from snippets.models import LANGUAGE_CHOICES, STYLE_CHOICES, Snippet
+
+
+class UserSerializer(serializers.ModelSerializer):
+    snippets = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Snippet.objects.all()
+    )
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'snippets']
 
 
 class SnippetSerializer(serializers.Serializer):
@@ -11,7 +23,7 @@ class SnippetSerializer(serializers.Serializer):
         required=False
     )
     code = serializers.CharField(style={'base_template': 'textarea.html'})
-    lineos = serializers.BooleanField(required=False)
+    linenos = serializers.BooleanField(required=False)
     language = serializers.ChoiceField(
         choices=LANGUAGE_CHOICES,
         default='python'
@@ -20,6 +32,7 @@ class SnippetSerializer(serializers.Serializer):
         choices=STYLE_CHOICES,
         default='friendly'
     )
+    owner = serializers.ReadOnlyField(source='owner.username')
 
     def create(self, validated_data):
         """
@@ -29,7 +42,8 @@ class SnippetSerializer(serializers.Serializer):
 
     def update(self, instance, validated_data):
         """
-        Update and return an existing `Snippet` instance, given the validated data.
+        Update and return an existing `Snippet`
+         instance, given the validated data.
         """
         instance.title = validated_data.get('title', instance.title)
         instance.code = validated_data.get('code', instance.code)
@@ -40,7 +54,10 @@ class SnippetSerializer(serializers.Serializer):
         return instance
 
 
+# Variant : Using ModelSerializer
 class SnippetSerializer2(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+
     class Meta:
         model = Snippet
-        fields = ['id', 'title', 'code', 'linenos', 'language', 'style']
+        fields = ['id', 'title', 'code', 'linenos', 'language', 'style', 'owner']
