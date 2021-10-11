@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status, generics
-from rest_framework import permissions
+from rest_framework import permissions, renderers
 
 from qstart.serializers import User
 from snippets.permissions import IsOwnerOrReadOnly
@@ -75,5 +75,12 @@ class SnippetDetail(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class SnippetHighlight(generics.GenericAPIView):
+    queryset = Snippet.objects.all()
+    renderer_classes = [renderers.StaticHTMLRenderer]
+
+    def get(self, request, *args, **kwargs):
+        snippet = self.get_object()
+        return Response(snippet.highlighted)
 # for more shortcuts
 # https://www.django-rest-framework.org/tutorial/3-class-based-views/#using-mixins
