@@ -16,8 +16,8 @@ def api_root(request, format=None):
     Snippets API root.
     """
     return Response({
-        'users': reverse('user-list', request=request, format=format),
-        'snippets': reverse('snippet-list', request=request, format=format)
+        'users': reverse('cbv-user-list', request=request, format=format),
+        'snippets': reverse('cbv-snippet-list', request=request, format=format)
     })
 
 

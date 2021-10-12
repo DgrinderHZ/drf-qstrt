@@ -1,17 +1,26 @@
 from django.urls import path
 from rest_framework.urlpatterns import format_suffix_patterns
-from snippets import views, cviews
+from . import cviews
 
+
+snippet_highlight = cviews.SnippetHighlight.as_view()
+snippet_list = cviews.SnippetList.as_view()
+snippet_detail = cviews.SnippetDetail.as_view()
 
 urlpatterns = [
-    path('snippets/', views.snippet_list, name='snippet-list'),
-    path('snippets/<int:pk>/', views.snippet_detail),
-    path('cbv/snippets/', cviews.SnippetList.as_view()),
-    path('cbv/snippets/<int:pk>/', cviews.SnippetDetail.as_view()),
-    path('u/', cviews.UserList.as_view(), name='user-list'),
-    path('u/<int:pk>/', cviews.UserDetail.as_view()),
-    path('sroot/', views.api_root),
-    path('snippets/<int:pk>/highlight/', cviews.SnippetHighlight.as_view()),
+    path('cbv/snippets/', snippet_list, name='cbv-snippet-list'),
+    path('cbv/snippets/<int:pk>/', snippet_detail, name='cbv-snippet-detail'),
+    path(
+        'cbv/snippets/<int:pk>/highlight/',
+        snippet_highlight,
+        name='snippet-highlight'
+    ),
+    path('users/', cviews.UserList.as_view(), name='cbv-user-list'),
+    path(
+        'users/<int:pk>/',
+        cviews.UserDetail.as_view(),
+        name='cbv-user-detail'
+    ),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
