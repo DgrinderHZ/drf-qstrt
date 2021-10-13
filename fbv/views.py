@@ -1,30 +1,37 @@
 """
 This contains func. based views.
 """
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes, renderer_classes
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.renderers import StaticHTMLRenderer
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from snippets.models import Snippet
-from snippets.serializers import SnippetSerializer
+from snippets.permissions import IsOwnerOrReadOnly
+from .serializers import SnippetSerializer
 from django.shortcuts import get_object_or_404
 
 
 @api_view(['GET'])
 def api_root(request, format=None):
     """
-    Snippets API root.
+    Function based view:
+    -  Snippets API root.
     """
     return Response({
         'users': reverse('cbv-user-list', request=request, format=format),
+        'fbv_snippets': reverse('snippet-list', request=request, format=format),
         'snippets': reverse('cbv-snippet-list', request=request, format=format)
     })
 
 
 @api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly])
 def snippet_list(request, format=None):
     """
-    List all code snippets, or create a new snippet.
+    Function based view:
+    - List all code snippets, or create a new snippet.
     """
     if request.method == 'GET':
         # Get instances
@@ -45,9 +52,13 @@ def snippet_list(request, format=None):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly])
 def snippet_detail(request, pk, format=None):
     """
-    Retrieve, update or delete a code snippet.
+    Function based view:
+    - Retrieve,
+    - Update or
+    - Delete a code snippet.
     """
     snippet = get_object_or_404(Snippet, pk=pk)
 
@@ -65,3 +76,12 @@ def snippet_detail(request, pk, format=None):
     elif request.method == 'DELETE':
         snippet.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['GET'])
+@renderer_classes([StaticHTMLRenderer])
+@permission_classes([IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly])
+def snippet_highlight(request, pk, format=None):
+    snippet = get_object_or_404(Snippet, pk=pk)
+    html = snippet.highlighted
+    return Response(html)

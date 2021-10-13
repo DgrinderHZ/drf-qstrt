@@ -96,8 +96,12 @@ class SnippetHighlight(generics.GenericAPIView):
     GenericAPIView based view:
     Renders the highighted snippet HTML content.
     """
-    queryset = Snippet.objects.all()
+    permission_classes = [
+        permissions.IsAuthenticatedOrReadOnly,
+        IsOwnerOrReadOnly
+    ]
     renderer_classes = [renderers.StaticHTMLRenderer]
+    queryset = Snippet.objects.all()
 
     def get(self, request, *args, **kwargs):
         snippet = self.get_object()
