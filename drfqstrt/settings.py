@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'fbv.apps.FbvConfig',
     'snippets.apps.SnippetsConfig',
+    'hyperlinked.apps.HyperlinkedConfig'
 ]
 
 MIDDLEWARE = [

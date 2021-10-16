@@ -15,11 +15,11 @@ urlpatterns = [
         snippet_highlight,
         name='snippet-highlight'
     ),
-    path('users/', cviews.UserList.as_view(), name='cbv-user-list'),
+    path('users/', cviews.UserList.as_view(), name='user-list'),
     path(
         'users/<int:pk>/',
         cviews.UserDetail.as_view(),
-        name='cbv-user-detail'
+        name='user-detail'
     ),
 ]
 

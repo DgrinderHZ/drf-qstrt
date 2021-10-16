@@ -21,6 +21,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('fbv.urls')),
     path('', include('snippets.urls')),
+    path('', include('hyperlinked.urls')),
     path('api-auth/', include(
         'rest_framework.urls',
         namespace='rest_framework'

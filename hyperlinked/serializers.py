@@ -6,11 +6,10 @@ User = get_user_model()
 
 
 # Variant : Using HyperlinkedModelSerializer
-class SnippetSerializer(
-        serializers.HyperlinkedModelSerializer):
+class SnippetSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     highlight = serializers.HyperlinkedIdentityField(
-                view_name='snippet-highlight',
+                view_name='hyper-snippet-highlight',
                 format='html')
 
     class Meta:
@@ -22,7 +21,7 @@ class SnippetSerializer(
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     snippets = serializers.HyperlinkedRelatedField(
                     many=True,
-                    view_name='cbv-snippet-detail',
+                    view_name='hyper-snippet-detail',
                     read_only=True)
 
     class Meta:
